@@ -34,13 +34,166 @@ import {
   AlertDialogTitle,
 } from "../../components/ui/alert-dialog";
 import { format, addDays, isSameDay, startOfDay, isAfter, differenceInMinutes, setHours, setMinutes, isBefore, addMinutes, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, addMonths, subMonths } from "date-fns";
-import { de } from "date-fns/locale";
+import { de, enUS } from "date-fns/locale";
 import { motion } from "framer-motion";
+import { useLanguage } from "../../contexts/LanguageContext";
+
+const dashboardCopy = {
+  en: {
+    claim: "Your smile in trusted hands",
+    home: "Home",
+    profile: "Profile",
+    greeting: "Good day",
+    fallbackPatient: "Patient",
+    intro: "Manage your dental health and book new appointments.",
+    bookingTitle: "Appointment booking",
+    phase: "Step",
+    of: "of",
+    alreadyBookedTitle: "You already have an appointment reserved",
+    alreadyBookedText:
+      "To keep our planning reliable, each patient can currently hold one upcoming appointment. You can manage or cancel your existing appointment in the sidebar before choosing a new one.",
+    nextVisit: "Your next visit",
+    serviceQuestion: "What can we do for you?",
+    defaultTreatmentDescription: "Professional treatment by our team.",
+    chooseAppointment: "Choose appointment",
+    choosePreferredAppointment: "Choose your preferred appointment",
+    weekdays: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+    fullShort: "full",
+    closed: "Closed",
+    noAvailableAppointments: "No available appointments",
+    closedOnDate: (date: string) => `The practice is closed on ${date}.`,
+    fullOnDate: (date: string) => `There are no appointments available on ${date}.`,
+    availableSlots: "Available slots",
+    selectedClosed:
+      "The practice is closed on this day. Please choose another day.",
+    selectedFull: "There are no available appointments for this day.",
+    noSlotsReleased: "No slots have been released for this day yet.",
+    checkNextDay: "Check next day",
+    reserved: "Reserved...",
+    confirmTitle: "Confirm appointment",
+    oneStep: "Only one step left",
+    selectedService: "Selected service",
+    selectedTime: "Selected time",
+    bookNow: "Book appointment",
+    cancel: "Cancel",
+    confirmedTitle: "Appointment confirmed",
+    confirmedText: (name: string, treatment: string) =>
+      `Thank you${name ? `, ${name}` : ""}! We look forward to seeing you. Your appointment for ${treatment} is now confirmed.`,
+    confirmedAppointment: "Confirmed appointment",
+    understood: "Understood",
+    nextAppointment: "Next appointment",
+    treatment: "Treatment",
+    cancelAppointment: "Cancel appointment",
+    noUpcomingTitle: "No upcoming appointments",
+    noUpcomingText:
+      "Take care of your healthiest smile and book a preventive appointment.",
+    history: "Treatment history",
+    canceled: "Canceled",
+    confirmed: "Confirmed",
+    noTreatments: "No treatments yet.",
+    cancelDialogTitle: "Cancel appointment?",
+    cancelDialogText:
+      "Do you really want to cancel this upcoming appointment? This action cannot be undone.",
+    yesCancel: "Yes, cancel",
+    sessionExpiredTitle: "Session expired",
+    sessionExpiredDescription: "Your reservation has been released.",
+    logoutError: "Logout failed",
+    slotUnavailableTitle: "Slot unavailable",
+    slotUnavailableDescription: "Someone else is reserving this slot right now.",
+    errorTitle: "Error",
+    slotSelectError: "The appointment could not be selected",
+    tryAgain: "Please try again.",
+    successTitle: "Success!",
+    successDescription: "Your appointment has been booked.",
+    cancelTooLateTitle: "Cancellation not possible",
+    cancelTooLateDescription:
+      "Appointments must be canceled at least 24 hours in advance. Please contact us by phone.",
+    canceledTitle: "Canceled",
+    canceledDescription: "Your appointment has been canceled successfully.",
+    timeSuffix: "",
+  },
+  de: {
+    claim: "Ihr Lächeln in besten Händen",
+    home: "Start",
+    profile: "Profil",
+    greeting: "Guten Tag",
+    fallbackPatient: "Patient",
+    intro: "Verwalten Sie Ihre Gesundheit und buchen Sie neue Termine.",
+    bookingTitle: "Terminbuchung",
+    phase: "Phase",
+    of: "von",
+    alreadyBookedTitle: "Sie haben bereits einen Termin reserviert",
+    alreadyBookedText:
+      "Um die Qualität unserer Planung zu sichern, kann pro Patient aktuell nur ein anstehender Termin gebucht werden. Sie können Ihren bestehenden Termin in der Sidebar rechts verwalten oder stornieren, um einen neuen zu wählen.",
+    nextVisit: "Ihr nächster Besuch",
+    serviceQuestion: "Was können wir für Sie tun?",
+    defaultTreatmentDescription: "Professionelle Behandlung durch unser Team.",
+    chooseAppointment: "Termin wählen",
+    choosePreferredAppointment: "Wählen Sie Ihren Wunschtermin",
+    weekdays: ["Mo", "Di", "Mi", "Do", "Fr"],
+    fullShort: "voll",
+    closed: "Geschlossen",
+    noAvailableAppointments: "Keine freien Termine",
+    closedOnDate: (date: string) => `Die Praxis ist am ${date} geschlossen.`,
+    fullOnDate: (date: string) => `Am ${date} sind keine Termine mehr frei.`,
+    availableSlots: "Verfügbare Slots",
+    selectedClosed:
+      "An diesem Tag ist die Praxis geschlossen. Bitte wählen Sie einen anderen Tag.",
+    selectedFull: "Für diesen Tag sind leider keine freien Termine mehr verfügbar.",
+    noSlotsReleased: "Bisher keine Slots für diesen Tag freigegeben.",
+    checkNextDay: "Nächsten Tag prüfen",
+    reserved: "Wird reserviert...",
+    confirmTitle: "Termin bestätigen",
+    oneStep: "Nur noch ein Schritt",
+    selectedService: "Gewählte Leistung",
+    selectedTime: "Gewählter Zeitpunkt",
+    bookNow: "Verbindlich buchen",
+    cancel: "Abbrechen",
+    confirmedTitle: "Termin bestätigt",
+    confirmedText: (name: string, treatment: string) =>
+      `Vielen Dank${name ? `, ${name}` : ""}! Wir freuen uns auf Sie. Ihr Termin für eine ${treatment} ist hiermit verbindlich gebucht.`,
+    confirmedAppointment: "Bestätigter Termin",
+    understood: "Verstanden",
+    nextAppointment: "Nächster Termin",
+    treatment: "Behandlung",
+    cancelAppointment: "Termin absagen",
+    noUpcomingTitle: "Keine anstehenden Termine",
+    noUpcomingText:
+      "Sorgen Sie für Ihr schönstes Lächeln und buchen Sie eine Vorsorge.",
+    history: "Behandlungs-Historie",
+    canceled: "Storniert",
+    confirmed: "Bestätigt",
+    noTreatments: "Noch keine Behandlungen.",
+    cancelDialogTitle: "Termin stornieren?",
+    cancelDialogText:
+      "Möchten Sie diesen anstehenden Termin wirklich absagen? Diese Aktion kann nicht rückgängig gemacht werden.",
+    yesCancel: "Ja, stornieren",
+    sessionExpiredTitle: "Sitzung abgelaufen",
+    sessionExpiredDescription: "Ihre Reservierung wurde aufgehoben.",
+    logoutError: "Fehler beim Abmelden",
+    slotUnavailableTitle: "Slot nicht verfügbar",
+    slotUnavailableDescription: "Jemand anderes reserviert diesen Slot gerade.",
+    errorTitle: "Fehler",
+    slotSelectError: "Der Termin konnte nicht ausgewählt werden",
+    tryAgain: "Bitte versuchen Sie es erneut.",
+    successTitle: "Erfolg!",
+    successDescription: "Ihr Termin wurde verbindlich gebucht.",
+    cancelTooLateTitle: "Stornierung nicht möglich",
+    cancelTooLateDescription:
+      "Termine müssen mindestens 24h vorher abgesagt werden. Bitte kontaktieren Sie uns telefonisch.",
+    canceledTitle: "Storniert",
+    canceledDescription: "Ihr Termin wurde erfolgreich abgesagt.",
+    timeSuffix: "Uhr",
+  },
+} as const;
 
 export default function DashboardPage() {
   const { user, profile } = useAuthContext();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { language } = useLanguage();
+  const copy = dashboardCopy[language];
+  const dateLocale = language === "de" ? de : enUS;
   
   // Data Fetching
   const { data: sessionTypes, isLoading: isLoadingTypes } = useSessionTypes();
@@ -89,7 +242,7 @@ export default function DashboardPage() {
       (ex) => ex.is_closed && dateStr >= ex.start_date && dateStr <= ex.end_date
     );
     return matchingEx
-      ? { blocked: true, reason: matchingEx.reason || 'Geschlossen' }
+      ? { blocked: true, reason: matchingEx.reason || copy.closed }
       : { blocked: false, reason: '' };
   };
 
@@ -183,7 +336,7 @@ export default function DashboardPage() {
     const ex = (availabilityExceptions as any[]).find(
       (e) => e.is_closed && dateStr >= e.start_date && dateStr <= e.end_date
     );
-    if (ex) return { status: 'blocked', label: ex.reason || 'Geschlossen' };
+    if (ex) return { status: 'blocked', label: ex.reason || copy.closed };
 
     // 2. Check if fully booked (no free slots for ANY session type)
     if (availabilityRules && allSessions && sessionTypes && sessionTypes.length > 0) {
@@ -218,7 +371,7 @@ export default function DashboardPage() {
         cur = addMinutes(cur, 30);
       }
 
-      if (!hasFreeSlot) return { status: 'full', label: 'Keine freien Termine' };
+      if (!hasFreeSlot) return { status: 'full', label: copy.noAvailableAppointments };
     }
 
     return { status: 'available', label: '' };
@@ -231,8 +384,8 @@ export default function DashboardPage() {
       if (isAfter(new Date(), lockExpiresAt)) {
         handleCancelBooking();
         toast({
-          title: "Sitzung abgelaufen",
-          description: "Ihre Reservierung wurde aufgehoben.",
+          title: copy.sessionExpiredTitle,
+          description: copy.sessionExpiredDescription,
           variant: "destructive"
         });
         setLockExpiresAt(null);
@@ -244,7 +397,7 @@ export default function DashboardPage() {
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
-      toast({ title: "Fehler beim Abmelden", description: error.message, variant: "destructive" });
+      toast({ title: copy.logoutError, description: error.message, variant: "destructive" });
     } else {
       navigate("/");
     }
@@ -269,8 +422,8 @@ export default function DashboardPage() {
         const success = await lockSession.mutateAsync({ sessionId: slot.id, userId: user.id });
         if (!success) {
           toast({
-            title: "Slot nicht verfügbar",
-            description: "Jemand anderes reserviert diesen Slot gerade.",
+            title: copy.slotUnavailableTitle,
+            description: copy.slotUnavailableDescription,
             variant: "destructive"
           });
           return;
@@ -282,8 +435,8 @@ export default function DashboardPage() {
       setBookingStep(3);
     } catch (err: any) {
       toast({
-        title: "Fehler",
-        description: `Der Termin konnte nicht ausgewählt werden: ${err.message || 'Bitte versuchen Sie es erneut.'}`,
+        title: copy.errorTitle,
+        description: `${copy.slotSelectError}: ${err.message || copy.tryAgain}`,
         variant: "destructive"
       });
     }
@@ -300,8 +453,8 @@ export default function DashboardPage() {
       });
       
       toast({
-        title: "Erfolg!",
-        description: "Ihr Termin wurde verbindlich gebucht.",
+        title: copy.successTitle,
+        description: copy.successDescription,
       });
       
       // Move to Success Step instead of jumping back to Step 1
@@ -309,7 +462,7 @@ export default function DashboardPage() {
       setLockExpiresAt(null); // The lock logic is done now that booking is confirmed
     } catch (err: any) {
       toast({
-        title: "Fehler",
+        title: copy.errorTitle,
         description: err.message,
         variant: "destructive"
       });
@@ -335,8 +488,8 @@ export default function DashboardPage() {
     
     if (startsAt - now < twentyFourHoursInMs) {
       toast({
-        title: "Stornierung nicht möglich",
-        description: "Termine müssen mindestens 24h vorher abgesagt werden. Bitte kontaktieren Sie uns telefonisch.",
+        title: copy.cancelTooLateTitle,
+        description: copy.cancelTooLateDescription,
         variant: "destructive"
       });
       return;
@@ -348,7 +501,7 @@ export default function DashboardPage() {
   const confirmCancellation = async () => {
     if (!cancelBookingId) return;
     await updateBooking.mutateAsync({ id: cancelBookingId, status: "canceled_by_user" });
-    toast({ title: "Storniert", description: "Ihr Termin wurde erfolgreich abgesagt." });
+    toast({ title: copy.canceledTitle, description: copy.canceledDescription });
     setCancelBookingId(null);
   };
 
@@ -380,15 +533,15 @@ export default function DashboardPage() {
             />
             <div className="flex flex-col">
               <span className="text-lg font-bold leading-none tracking-tight text-blue-950">Dr. Schmidt</span>
-              <span className="text-[9px] font-semibold italic text-blue-600/80 leading-none mt-1">Ihr Lächeln in besten Händen</span>
+              <span className="text-[9px] font-semibold italic text-blue-600/80 leading-none mt-1">{copy.claim}</span>
             </div>
           </Link>
           <div className="flex items-center gap-2 sm:gap-6">
             <Link to="/" className="text-stone-500 hover:text-blue-600 transition-all flex items-center gap-2 px-3 py-2 rounded-full hover:bg-blue-50/50">
-              <Home size={18} /> <span className="hidden sm:inline text-[11px] font-black uppercase tracking-widest">Start</span>
+              <Home size={18} /> <span className="hidden sm:inline text-[11px] font-black uppercase tracking-widest">{copy.home}</span>
             </Link>
             <Link to="/profile" className="text-stone-500 hover:text-blue-600 transition-all flex items-center gap-2 px-3 py-2 rounded-full hover:bg-blue-50/50">
-              <UserIcon size={18} /> <span className="hidden sm:inline text-[11px] font-black uppercase tracking-widest">Profil</span>
+              <UserIcon size={18} /> <span className="hidden sm:inline text-[11px] font-black uppercase tracking-widest">{copy.profile}</span>
             </Link>
             <div className="h-4 w-px bg-stone-200 hidden sm:block" />
             <button onClick={handleLogout} className="px-5 py-2.5 rounded-full bg-stone-950 text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-stone-200 hover:bg-stone-800 transition-all active:scale-95">
@@ -402,9 +555,9 @@ export default function DashboardPage() {
         <section className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-4xl font-montserrat font-black text-blue-950 uppercase tracking-tighter">
-              Guten Tag, {profile?.first_name || (isLoadingBookings ? <Skeleton className="h-10 w-48 inline-block align-middle" /> : "Patient")}!
+              {copy.greeting}, {profile?.first_name || (isLoadingBookings ? <Skeleton className="h-10 w-48 inline-block align-middle" /> : copy.fallbackPatient)}!
             </h1>
-            <p className="text-stone-500 mt-1">Verwalten Sie Ihre Gesundheit und buchen Sie neue Termine.</p>
+            <p className="text-stone-500 mt-1">{copy.intro}</p>
           </div>
         </section>
 
@@ -420,10 +573,10 @@ export default function DashboardPage() {
 
                <div className="p-10 border-b border-stone-100/50 bg-stone-50/30 flex items-center justify-between relative z-10">
                   <div>
-                    <h2 className="text-2xl font-montserrat font-black text-blue-950 uppercase tracking-tighter">Terminbuchung</h2>
+                    <h2 className="text-2xl font-montserrat font-black text-blue-950 uppercase tracking-tighter">{copy.bookingTitle}</h2>
                     <div className="flex items-center gap-2 mt-2">
                        <span className="h-px w-6 bg-blue-500" />
-                       <p className="text-stone-400 text-[9px] font-black uppercase tracking-[0.3em]">Phase {bookingStep} von 4</p>
+                       <p className="text-stone-400 text-[9px] font-black uppercase tracking-[0.3em]">{copy.phase} {bookingStep} {copy.of} 4</p>
                     </div>
                   </div>
                   <div className="flex gap-2">
@@ -440,16 +593,15 @@ export default function DashboardPage() {
                          <CheckCircle2 size={40} />
                       </div>
                       <div className="max-w-md">
-                        <h3 className="text-2xl font-montserrat font-black text-stone-900 uppercase tracking-tight leading-none mb-4">Sie haben bereits einen Termin reserviert</h3>
+                        <h3 className="text-2xl font-montserrat font-black text-stone-900 uppercase tracking-tight leading-none mb-4">{copy.alreadyBookedTitle}</h3>
                         <p className="text-stone-500 text-sm leading-relaxed font-medium">
-                          Um die Qualität unserer Planung zu sichern, kann pro Patient aktuell nur ein anstehender Termin gebucht werden. 
-                          Sie können Ihren bestehenden Termin in der Sidebar rechts verwalten oder stornieren, um einen neuen zu wählen.
+                          {copy.alreadyBookedText}
                         </p>
                       </div>
                       <div className="pt-4 flex flex-col items-center gap-2">
-                        <span className="text-[10px] font-black text-stone-300 uppercase tracking-[0.2em]">Ihr nächster Besuch</span>
+                        <span className="text-[10px] font-black text-stone-300 uppercase tracking-[0.2em]">{copy.nextVisit}</span>
                         <div className="bg-stone-50 px-6 py-3 rounded-2xl border border-stone-100 font-bold text-stone-900">
-                          {format(new Date(upcomingBooking.session.start_time), "EEEE, d. MMMM • HH:mm", { locale: de })} Uhr
+                          {format(new Date(upcomingBooking.session.start_time), "EEEE, d. MMMM • HH:mm", { locale: dateLocale })} {copy.timeSuffix}
                         </div>
                       </div>
                     </div>
@@ -458,7 +610,7 @@ export default function DashboardPage() {
                       {/* Step 1: Treatment Type */}
                       {bookingStep === 1 && (
                         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                          <h3 className="font-montserrat font-bold text-stone-900 text-lg mb-4">Was können wir für Sie tun?</h3>
+                          <h3 className="font-montserrat font-bold text-stone-900 text-lg mb-4">{copy.serviceQuestion}</h3>
                           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
                             {isLoadingTypes ? (
                               [...Array(4)].map((_, i) => (
@@ -492,10 +644,10 @@ export default function DashboardPage() {
                                     </span>
                                   </div>
                                   <h3 className="font-montserrat font-black text-blue-950 group-hover:text-blue-600 transition-colors uppercase tracking-tight text-xs relative z-10">{type.name}</h3>
-                                  <p className="text-stone-500 mt-3 line-clamp-3 leading-relaxed text-[11px] font-medium relative z-10">{type.description || "Professionelle Behandlung durch unser Team."}</p>
+                                  <p className="text-stone-500 mt-3 line-clamp-3 leading-relaxed text-[11px] font-medium relative z-10">{type.description || copy.defaultTreatmentDescription}</p>
                                   
                                   <div className="mt-6 flex items-center gap-1.5 text-blue-600/0 group-hover:text-blue-600 transition-all font-black text-[9px] uppercase tracking-widest relative z-10">
-                                    Termin wählen <ChevronRight size={10} />
+                                    {copy.chooseAppointment} <ChevronRight size={10} />
                                   </div>
                                 </button>
                               ))
@@ -513,7 +665,7 @@ export default function DashboardPage() {
                              </button>
                              <div>
                                <h3 className="font-bold text-stone-900">{selectedType?.name}</h3>
-                               <p className="text-[10px] text-stone-400 font-bold uppercase tracking-widest leading-none mt-1">Wählen Sie Ihren Wunschtermin</p>
+                               <p className="text-[10px] text-stone-400 font-bold uppercase tracking-widest leading-none mt-1">{copy.choosePreferredAppointment}</p>
                              </div>
                           </div>
                           
@@ -528,7 +680,7 @@ export default function DashboardPage() {
                                 <ChevronLeft size={16} className="text-stone-600 inline-block" />
                               </button>
                               <p className="text-[12px] font-black uppercase tracking-[0.2em] text-stone-700">
-                                {format(calendarViewMonth, "MMMM yyyy", { locale: de })}
+                                {format(calendarViewMonth, "MMMM yyyy", { locale: dateLocale })}
                               </p>
                               <button 
                                 onClick={() => setCalendarViewMonth(addMonths(calendarViewMonth, 1))}
@@ -542,7 +694,7 @@ export default function DashboardPage() {
                            <div className="bg-white rounded-3xl border border-stone-200 p-4 shadow-sm">
                              {/* Weekday headers */}
                              <div className="grid grid-cols-5 gap-2 mb-3">
-                               {['Mo', 'Di', 'Mi', 'Do', 'Fr'].map(d => (
+                               {copy.weekdays.map(d => (
                                  <div key={d} className="text-center text-[9px] font-black tracking-widest text-stone-400">
                                    {d}
                                  </div>
@@ -601,7 +753,7 @@ export default function DashboardPage() {
                                        <span className="text-[7px] font-black absolute bottom-1.5 text-red-500">✕</span>
                                      )}
                                      {!isPastDay && status === 'full' && (
-                                       <span className="text-[5px] font-black uppercase tracking-widest absolute bottom-1.5 text-stone-400">voll</span>
+                                       <span className="text-[5px] font-black uppercase tracking-widest absolute bottom-1.5 text-stone-400">{copy.fullShort}</span>
                                      )}
                                    </button>
                                  </div>
@@ -644,8 +796,8 @@ export default function DashboardPage() {
                                      isHoliday ? "text-red-400" : "text-stone-400"
                                    )}>
                                      {isHoliday
-                                       ? `Die Praxis ist am ${format(hoveredDate, "dd. MMMM", { locale: de })} geschlossen.`
-                                       : `Am ${format(hoveredDate, "dd. MMMM", { locale: de })} sind keine Termine mehr frei.`
+                                       ? copy.closedOnDate(format(hoveredDate, "dd. MMMM", { locale: dateLocale }))
+                                       : copy.fullOnDate(format(hoveredDate, "dd. MMMM", { locale: dateLocale }))
                                      }
                                    </span>
                                  </div>
@@ -656,7 +808,7 @@ export default function DashboardPage() {
                           {/* Time Slots */}
                           <div className="space-y-4">
                             <div className="flex items-center justify-between">
-                                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">Verfügbare Slots</h4>
+                                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">{copy.availableSlots}</h4>
                             </div>
 
                             {/* Exception / Holiday Banner (for the SELECTED day) */}
@@ -685,8 +837,8 @@ export default function DashboardPage() {
                                       isHoliday ? "text-red-500" : "text-stone-500"
                                     )}>
                                       {isHoliday
-                                        ? "An diesem Tag ist die Praxis geschlossen. Bitte wählen Sie einen anderen Tag."
-                                        : "Für diesen Tag sind leider keine freien Termine mehr verfügbar."
+                                        ? copy.selectedClosed
+                                        : copy.selectedFull
                                       }
                                     </p>
                                   </div>
@@ -712,9 +864,9 @@ export default function DashboardPage() {
                                  <div className="w-12 h-12 bg-stone-100 rounded-full flex items-center justify-center text-stone-400">
                                     <X size={24} />
                                  </div>
-                                 <p className="text-stone-500 text-sm font-medium">Bisher keine Slots für diesen Tag freigegeben.</p>
+                                 <p className="text-stone-500 text-sm font-medium">{copy.noSlotsReleased}</p>
                                  <button onClick={() => setSelectedDate(addDays(selectedDate, 1))} className="text-emerald-600 text-xs font-black uppercase tracking-widest hover:underline">
-                                    Nächsten Tag prüfen
+                                    {copy.checkNextDay}
                                  </button>
                               </div>
                               )
@@ -733,14 +885,14 @@ export default function DashboardPage() {
                                  {lockExpiresAt && (
                                    <div className="flex items-center gap-2 bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ring-4 ring-emerald-100/50">
                                      <Timer size={14} className="animate-pulse" />
-                                     Wird reserviert...
+                                     {copy.reserved}
                                    </div>
                                  )}
                               </div>
 
                               <div>
-                                 <h3 className="font-montserrat font-black text-stone-900 uppercase tracking-tight text-2xl leading-none">Termin bestätigen</h3>
-                                 <p className="text-stone-400 text-xs font-bold uppercase tracking-widest mt-2 px-1 border-l-2 border-stone-300">Nur noch ein Schritt</p>
+                                 <h3 className="font-montserrat font-black text-stone-900 uppercase tracking-tight text-2xl leading-none">{copy.confirmTitle}</h3>
+                                 <p className="text-stone-400 text-xs font-bold uppercase tracking-widest mt-2 px-1 border-l-2 border-stone-300">{copy.oneStep}</p>
                               </div>
 
                               <div className="space-y-4">
@@ -750,7 +902,7 @@ export default function DashboardPage() {
                                           <ClipboardList size={22} />
                                        </div>
                                        <div>
-                                          <span className="text-[9px] font-black text-stone-400 uppercase tracking-[0.2em] block mb-1">Gewählte Leistung</span>
+                                          <span className="text-[9px] font-black text-stone-400 uppercase tracking-[0.2em] block mb-1">{copy.selectedService}</span>
                                           <span className="font-montserrat font-black text-blue-950 uppercase text-xs tracking-tight">{selectedType?.name}</span>
                                        </div>
                                     </div>
@@ -762,9 +914,9 @@ export default function DashboardPage() {
                                           <CalendarIcon size={22} />
                                        </div>
                                        <div>
-                                          <span className="text-[9px] font-black text-stone-400 uppercase tracking-[0.2em] block mb-1">Gewählter Zeitpunkt</span>
+                                          <span className="text-[9px] font-black text-stone-400 uppercase tracking-[0.2em] block mb-1">{copy.selectedTime}</span>
                                           <span className="font-montserrat font-black text-blue-950 uppercase text-xs tracking-tight">
-                                            {format(new Date(selectedSlot?.start_time || new Date()), "EEEE, d. MMMM • HH:mm", { locale: de })} Uhr
+                                            {format(new Date(selectedSlot?.start_time || new Date()), "EEEE, d. MMMM • HH:mm", { locale: dateLocale })} {copy.timeSuffix}
                                           </span>
                                        </div>
                                     </div>
@@ -776,10 +928,10 @@ export default function DashboardPage() {
                                   onClick={handleConfirmBooking}
                                   className="w-full h-16 bg-stone-900 hover:bg-stone-800 text-white rounded-3xl font-black uppercase tracking-widest text-xs shadow-2xl transition-all active:scale-[0.98]"
                                 >
-                                   Verbindlich buchen
+                                   {copy.bookNow}
                                 </Button>
                                 <button onClick={handleCancelBooking} className="w-full text-center text-[10px] font-black uppercase text-stone-400 tracking-[0.2em] hover:text-stone-900 pt-2">
-                                   Abbrechen
+                                   {copy.cancel}
                                 </button>
                               </div>
                            </div>
@@ -820,7 +972,7 @@ export default function DashboardPage() {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.4 }}
                               >
-                                Termin bestätigt
+                                {copy.confirmedTitle}
                               </motion.h2>
                               
                               <motion.p 
@@ -829,7 +981,7 @@ export default function DashboardPage() {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.5 }}
                               >
-                                Vielen Dank{profile?.first_name ? `, ${profile.first_name}` : ""}! Wir freuen uns auf Sie. Ihr Termin für eine <strong className="text-white">{selectedType?.name}</strong> ist hiermit verbindlich gebucht.
+                                {copy.confirmedText(profile?.first_name || "", selectedType?.name || copy.treatment)}
                               </motion.p>
 
                               <motion.div 
@@ -838,12 +990,12 @@ export default function DashboardPage() {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.6 }}
                               >
-                                <p className="text-[10px] text-primary font-black uppercase tracking-widest mb-1.5 pl-1">Bestätigter Termin</p>
+                                <p className="text-[10px] text-primary font-black uppercase tracking-widest mb-1.5 pl-1">{copy.confirmedAppointment}</p>
                                 <div className="text-[17px] font-bold font-montserrat flex items-center gap-3">
                                   <div className="w-10 h-10 bg-white/10 rounded-2xl flex items-center justify-center text-primary shrink-0">
                                     <CalendarCheck size={18} />
                                   </div>
-                                  <span className="capitalize">{selectedSlot ? format(new Date(selectedSlot.start_time), "EEEE, d. MMMM 'um' HH:mm", { locale: de }) : ""} Uhr</span>
+                                  <span className="capitalize">{selectedSlot ? format(new Date(selectedSlot.start_time), language === "de" ? "EEEE, d. MMMM 'um' HH:mm" : "EEEE, MMMM d 'at' HH:mm", { locale: dateLocale }) : ""} {copy.timeSuffix}</span>
                                 </div>
                               </motion.div>
 
@@ -860,7 +1012,7 @@ export default function DashboardPage() {
                                   }}
                                   className="w-full h-16 bg-white hover:bg-stone-100 text-stone-900 rounded-3xl font-black uppercase tracking-widest text-[11px] transition-all shadow-xl shadow-white/5 active:scale-95 border-none"
                                 >
-                                  Verstanden
+                                  {copy.understood}
                                 </Button>
                               </motion.div>
                             </div>
@@ -891,7 +1043,7 @@ export default function DashboardPage() {
             ) : upcomingBooking ? (
               <div className="bg-blue-950 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden group">
                  <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/20 rounded-full -mr-16 -mt-16 blur-2xl group-hover:bg-blue-600/30 transition-colors" />
-                 <h3 className="text-[9px] font-black uppercase tracking-[0.3em] text-blue-400 mb-6">Nächster Termin</h3>
+                 <h3 className="text-[9px] font-black uppercase tracking-[0.3em] text-blue-400 mb-6">{copy.nextAppointment}</h3>
                  
                  <div className="flex items-center gap-4 mb-8">
                     <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-blue-400">
@@ -899,16 +1051,16 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <div className="text-xl font-montserrat font-black uppercase tracking-tight">
-                        {format(new Date(upcomingBooking.session.start_time), "d. MMMM", { locale: de })}
+                        {format(new Date(upcomingBooking.session.start_time), "d. MMMM", { locale: dateLocale })}
                       </div>
                       <div className="text-blue-400/80 text-[10px] font-black uppercase tracking-[0.2em] mt-1">
-                        {format(new Date(upcomingBooking.session.start_time), "HH:mm")} Uhr
+                        {format(new Date(upcomingBooking.session.start_time), "HH:mm")} {copy.timeSuffix}
                       </div>
                     </div>
                  </div>
                  
                  <div className="p-5 bg-white/5 rounded-2xl border border-white/10 mb-8 backdrop-blur-sm">
-                   <p className="text-[9px] text-white/30 font-black uppercase tracking-widest mb-1.5">Behandlung</p>
+                   <p className="text-[9px] text-white/30 font-black uppercase tracking-widest mb-1.5">{copy.treatment}</p>
                    <p className="font-bold text-sm tracking-tight text-blue-50">{upcomingBooking.session.session_type?.name}</p>
                  </div>
 
@@ -917,7 +1069,7 @@ export default function DashboardPage() {
                    onClick={() => handleCancelExisting(upcomingBooking.id, upcomingBooking.session.start_time)}
                    className="w-full bg-white/5 border-white/10 text-stone-400 hover:bg-red-500 hover:text-white hover:border-red-500 rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 transition-all"
                  >
-                    Termin absagen
+                    {copy.cancelAppointment}
                  </Button>
               </div>
             ) : (
@@ -925,15 +1077,15 @@ export default function DashboardPage() {
                  <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-stone-300 mb-6 shadow-sm">
                     <AlertCircle size={24} />
                  </div>
-                 <h3 className="font-montserrat font-bold text-stone-900 leading-tight">Keine anstehenden Termine</h3>
-                 <p className="text-stone-500 text-xs mt-2 leading-relaxed">Sorgen Sie für Ihr schönstes Lächeln und buchen Sie eine Vorsorge.</p>
+                 <h3 className="font-montserrat font-bold text-stone-900 leading-tight">{copy.noUpcomingTitle}</h3>
+                 <p className="text-stone-500 text-xs mt-2 leading-relaxed">{copy.noUpcomingText}</p>
               </div>
             )}
 
             {/* HISTORY */}
             <div className="bg-white rounded-[2.5rem] border border-stone-100 p-8 shadow-xl shadow-stone-200/50">
                <h3 className="text-[10px] font-black uppercase tracking-widest text-stone-400 mb-6 flex items-center gap-2">
-                 <History size={14} /> Behandlungs-Historie
+                 <History size={14} /> {copy.history}
                </h3>
                <div className="space-y-6">
                  {isLoadingBookings ? (
@@ -962,14 +1114,14 @@ export default function DashboardPage() {
                                   {booking.session.session_type?.name}
                                 </p>
                                 <p className="text-[10px] text-stone-400 font-bold uppercase tracking-tighter">
-                                  {format(new Date(booking.session.start_time), "d. MMM yyyy")} • {booking.status === 'canceled_by_user' ? 'Storniert' : 'Bestätigt'}
+                                  {format(new Date(booking.session.start_time), "d. MMM yyyy", { locale: dateLocale })} • {booking.status === 'canceled_by_user' ? copy.canceled : copy.confirmed}
                                 </p>
                               </div>
                            </div>
                            <ChevronRight size={14} className="text-stone-300 opacity-0 group-hover:opacity-100 transition-all" />
                         </div>
                       ))}
-                      {!myBookings?.length && <p className="text-stone-400 text-[11px] italic">Noch keine Behandlungen.</p>}
+                      {!myBookings?.length && <p className="text-stone-400 text-[11px] italic">{copy.noTreatments}</p>}
                    </>
                  )}
                </div>
@@ -985,21 +1137,21 @@ export default function DashboardPage() {
               <AlertCircle size={36} />
             </div>
             <AlertDialogTitle className="text-2xl font-montserrat font-black text-blue-950 uppercase tracking-tighter">
-              Termin stornieren?
+              {copy.cancelDialogTitle}
             </AlertDialogTitle>
             <AlertDialogDescription className="text-stone-500 font-medium leading-relaxed mt-2">
-              Möchten Sie diesen anstehenden Termin wirklich absagen? Diese Aktion kann nicht rückgängig gemacht werden.
+              {copy.cancelDialogText}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="mt-8 gap-3 sm:gap-0">
             <AlertDialogCancel className="h-14 rounded-2xl font-bold uppercase tracking-widest text-xs border-stone-200 hover:bg-stone-50">
-              Abbrechen
+              {copy.cancel}
             </AlertDialogCancel>
             <AlertDialogAction 
               onClick={confirmCancellation}
               className="h-14 rounded-2xl bg-red-500 text-white hover:bg-red-600 font-bold uppercase tracking-widest text-xs border-none"
             >
-              Ja, stornieren
+              {copy.yesCancel}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
