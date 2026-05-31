@@ -36,7 +36,7 @@ import {
 import { format, addDays, isSameDay, startOfDay, isAfter, differenceInMinutes, setHours, setMinutes, isBefore, addMinutes, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, addMonths, subMonths } from "date-fns";
 import { de, enUS } from "date-fns/locale";
 import { motion } from "framer-motion";
-import { useLanguage } from "../../contexts/LanguageContext";
+import { type Language, useLanguage } from "../../contexts/LanguageContext";
 
 const dashboardCopy = {
   en: {
@@ -186,6 +186,64 @@ const dashboardCopy = {
     timeSuffix: "Uhr",
   },
 } as const;
+
+const treatmentTranslations = [
+  {
+    match: "ästhetische",
+    name: "Aesthetic dentistry - Veneers",
+    description:
+      "Thin ceramic shells are bonded to the front of the teeth to refine shape and color.",
+  },
+  {
+    match: "bleaching",
+    name: "Bleaching",
+    description: "Professional tooth whitening for a brighter, natural smile.",
+  },
+  {
+    match: "kontrolluntersuchung",
+    name: "Dental check-up",
+    description:
+      "Regular examination of teeth and gums to detect dental concerns early.",
+  },
+  {
+    match: "kunststofffüllung",
+    name: "Composite filling",
+    description:
+      "Tooth-colored restoration after removing damaged tooth structure.",
+  },
+  {
+    match: "professionelle zahnreinigung",
+    name: "Professional dental cleaning",
+    description:
+      "Thorough professional cleaning to remove tartar, deposits and discoloration.",
+  },
+  {
+    match: "wurzel",
+    name: "Root canal treatment",
+    description:
+      "Careful treatment for inflamed tooth roots to preserve the natural tooth.",
+  },
+];
+
+function localizeTreatmentName(name: string | null | undefined, language: Language) {
+  if (!name || language === "de") return name || "";
+  const found = treatmentTranslations.find((item) =>
+    name.toLowerCase().includes(item.match),
+  );
+  return found?.name || name;
+}
+
+function localizeTreatmentDescription(
+  description: string | null | undefined,
+  name: string | null | undefined,
+  language: Language,
+  fallback: string,
+) {
+  if (language === "de") return description || fallback;
+  const source = `${name || ""} ${description || ""}`.toLowerCase();
+  const found = treatmentTranslations.find((item) => source.includes(item.match));
+  return found?.description || description || fallback;
+}
 
 export default function DashboardPage() {
   const { user, profile } = useAuthContext();
@@ -643,8 +701,8 @@ export default function DashboardPage() {
                                       {type.duration_minutes || type.default_duration_minutes} Min
                                     </span>
                                   </div>
-                                  <h3 className="font-montserrat font-black text-blue-950 group-hover:text-blue-600 transition-colors uppercase tracking-tight text-xs relative z-10">{type.name}</h3>
-                                  <p className="text-stone-500 mt-3 line-clamp-3 leading-relaxed text-[11px] font-medium relative z-10">{type.description || copy.defaultTreatmentDescription}</p>
+                                  <h3 className="font-montserrat font-black text-blue-950 group-hover:text-blue-600 transition-colors uppercase tracking-tight text-xs relative z-10">{localizeTreatmentName(type.name, language)}</h3>
+                                  <p className="text-stone-500 mt-3 line-clamp-3 leading-relaxed text-[11px] font-medium relative z-10">{localizeTreatmentDescription(type.description, type.name, language, copy.defaultTreatmentDescription)}</p>
                                   
                                   <div className="mt-6 flex items-center gap-1.5 text-blue-600/0 group-hover:text-blue-600 transition-all font-black text-[9px] uppercase tracking-widest relative z-10">
                                     {copy.chooseAppointment} <ChevronRight size={10} />
@@ -664,7 +722,7 @@ export default function DashboardPage() {
                                <ChevronLeft size={20} className="text-stone-600" />
                              </button>
                              <div>
-                               <h3 className="font-bold text-stone-900">{selectedType?.name}</h3>
+                               <h3 className="font-bold text-stone-900">{localizeTreatmentName(selectedType?.name, language)}</h3>
                                <p className="text-[10px] text-stone-400 font-bold uppercase tracking-widest leading-none mt-1">{copy.choosePreferredAppointment}</p>
                              </div>
                           </div>
@@ -903,7 +961,7 @@ export default function DashboardPage() {
                                        </div>
                                        <div>
                                           <span className="text-[9px] font-black text-stone-400 uppercase tracking-[0.2em] block mb-1">{copy.selectedService}</span>
-                                          <span className="font-montserrat font-black text-blue-950 uppercase text-xs tracking-tight">{selectedType?.name}</span>
+                                          <span className="font-montserrat font-black text-blue-950 uppercase text-xs tracking-tight">{localizeTreatmentName(selectedType?.name, language)}</span>
                                        </div>
                                     </div>
                                  </div>
@@ -981,7 +1039,7 @@ export default function DashboardPage() {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.5 }}
                               >
-                                {copy.confirmedText(profile?.first_name || "", selectedType?.name || copy.treatment)}
+                                {copy.confirmedText(profile?.first_name || "", localizeTreatmentName(selectedType?.name, language) || copy.treatment)}
                               </motion.p>
 
                               <motion.div 
@@ -1061,7 +1119,7 @@ export default function DashboardPage() {
                  
                  <div className="p-5 bg-white/5 rounded-2xl border border-white/10 mb-8 backdrop-blur-sm">
                    <p className="text-[9px] text-white/30 font-black uppercase tracking-widest mb-1.5">{copy.treatment}</p>
-                   <p className="font-bold text-sm tracking-tight text-blue-50">{upcomingBooking.session.session_type?.name}</p>
+                   <p className="font-bold text-sm tracking-tight text-blue-50">{localizeTreatmentName(upcomingBooking.session.session_type?.name, language)}</p>
                  </div>
 
                  <Button 
@@ -1111,7 +1169,7 @@ export default function DashboardPage() {
                               </div>
                               <div>
                                 <p className="font-bold text-sm text-stone-900 leading-tight truncate max-w-[120px]">
-                                  {booking.session.session_type?.name}
+                                  {localizeTreatmentName(booking.session.session_type?.name, language)}
                                 </p>
                                 <p className="text-[10px] text-stone-400 font-bold uppercase tracking-tighter">
                                   {format(new Date(booking.session.start_time), "d. MMM yyyy", { locale: dateLocale })} • {booking.status === 'canceled_by_user' ? copy.canceled : copy.confirmed}
