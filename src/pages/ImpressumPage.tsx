@@ -13,6 +13,7 @@ const imprintContent = {
     title: "Imprint",
     subtitleA: "Legal information",
     subtitleB: "April 2024",
+    prototypeNotice: "This page is part of a concept prototype and does not represent a real dental practice.",
     owner: "Practice owner",
     practice: "Dental practice",
     qualification: "Qualification",
@@ -35,6 +36,7 @@ const imprintContent = {
     title: "Impressum",
     subtitleA: "Gesetzliche Angaben",
     subtitleB: "Stand April 2024",
+    prototypeNotice: "Diese Seite ist Teil eines Konzept-Prototyps und stellt keine echte Zahnarztpraxis dar.",
     owner: "Inhaberin",
     practice: "Zahnarztpraxis",
     qualification: "Qualifikation",
@@ -88,6 +90,10 @@ export default function ImpressumPage() {
                 <span>{copy.subtitleB}</span>
               </p>
             </div>
+          </div>
+
+          <div className="mb-12 rounded-2xl border border-blue-100 bg-blue-50/60 px-5 py-4 font-lato text-sm font-semibold leading-relaxed text-blue-900">
+            {copy.prototypeNotice}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">

@@ -12,6 +12,7 @@ const privacyContent = {
     metaDescription: "Information about the processing of personal data in the dental practice prototype Dr. Maria Schmidt.",
     title: "Privacy Policy",
     subtitle: "Transparency & security for your data",
+    prototypeNotice: "This page is part of a concept prototype and does not represent a real dental practice.",
     responsibleTitle: "1. Controller",
     responsibleText: "The controller responsible for data processing on this website is:",
     practice: "Dental Practice Dr. Maria Schmidt",
@@ -38,6 +39,7 @@ const privacyContent = {
     metaDescription: "Informationen zur Verarbeitung Ihrer personenbezogenen Daten in der Zahnarztpraxis Dr. Maria Schmidt.",
     title: "Datenschutz",
     subtitle: "Transparenz & Sicherheit für Ihre Daten",
+    prototypeNotice: "Diese Seite ist Teil eines Konzept-Prototyps und stellt keine echte Zahnarztpraxis dar.",
     responsibleTitle: "1. Verantwortliche Stelle",
     responsibleText: "Verantwortlich für die Datenverarbeitung auf dieser Webseite ist:",
     practice: "Zahnarztpraxis Dr. Maria Schmidt",
@@ -93,6 +95,10 @@ export default function PrivacyPage() {
                 {copy.subtitle}
               </p>
             </div>
+          </div>
+
+          <div className="mb-10 rounded-2xl border border-blue-100 bg-blue-50/60 px-5 py-4 font-lato text-sm font-semibold leading-relaxed text-blue-900">
+            {copy.prototypeNotice}
           </div>
 
           <div className="prose prose-stone max-w-none space-y-12">
