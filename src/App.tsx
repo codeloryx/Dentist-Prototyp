@@ -20,6 +20,7 @@ import { ProtectedRoute, AdminRoute } from "./components/auth/ProtectedRoutes";
 import { useAuthContext } from "./contexts/AuthContext";
 import { NetworkOfflineBanner } from "./components/ui/NetworkOfflineBanner";
 import { CookieBanner } from "./components/ui/CookieBanner";
+import { LanguageProvider } from "./contexts/LanguageContext";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -48,7 +49,7 @@ function AdminDashboardRedirect() {
 
 export default function App() {
   return (
-    <>
+    <LanguageProvider>
       <ScrollToTop />
       <NetworkOfflineBanner />
       <CookieBanner />
@@ -82,6 +83,6 @@ export default function App() {
       {/* Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
-    </>
+    </LanguageProvider>
   );
 }
