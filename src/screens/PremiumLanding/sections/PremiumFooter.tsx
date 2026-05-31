@@ -1,7 +1,12 @@
 import { Link } from "react-router-dom";
 import { Instagram, Linkedin } from "lucide-react";
+import { useLanguage } from "../../../contexts/LanguageContext";
+import { premiumLandingContent } from "../premiumLandingContent";
 
 export const PremiumFooter = (): JSX.Element => {
+  const { language } = useLanguage();
+  const content = premiumLandingContent[language].footer;
+
   return (
     <footer
       id="kontakt"
@@ -11,10 +16,10 @@ export const PremiumFooter = (): JSX.Element => {
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
           <div>
             <p className="font-montserrat text-lg font-bold text-stone-900">
-              Dr. Maria Schmidt
+              {content.practice}
             </p>
             <p className="mt-4 font-lato text-sm leading-relaxed text-stone-500">
-              Zahnarztpraxis · evidenzbasierte Diagnostik und Therapieplanung auf höchstem medizinischem Niveau.
+              {content.description}
             </p>
             <div className="mt-8 flex items-center gap-3">
               {[
@@ -37,7 +42,7 @@ export const PremiumFooter = (): JSX.Element => {
 
           <address className="not-italic">
             <p className="font-montserrat text-[10px] font-black uppercase tracking-[0.2em] text-blue-800">
-              Standort
+              {content.location}
             </p>
             <p className="mt-6 font-lato text-sm leading-relaxed text-stone-600">
               Charlottenring 12
@@ -66,15 +71,15 @@ export const PremiumFooter = (): JSX.Element => {
 
           <div className="flex flex-col">
             <p className="font-montserrat text-[10px] font-black uppercase tracking-[0.2em] text-blue-800 mb-6">
-              Sprechzeiten
+              {content.officeHours}
             </p>
             <div className="space-y-4 font-lato text-sm text-stone-600">
               <div className="flex justify-between items-center border-b border-stone-100 pb-2">
-                <span className="font-medium">Mo – Fr</span>
+                <span className="font-medium">{content.weekday}</span>
                 <span className="text-stone-900 font-bold">08:00 – 17:00</span>
               </div>
               <div className="flex justify-between items-center text-[10px] text-stone-400 font-bold uppercase tracking-widest pt-1">
-                <span>Pause</span>
+                <span>{content.break}</span>
                 <span>12:00 – 13:00</span>
               </div>
             </div>
@@ -85,8 +90,8 @@ export const PremiumFooter = (): JSX.Element => {
                 className="group flex items-center justify-between w-full bg-stone-900 hover:bg-stone-800 p-5 rounded-2xl transition-all duration-300 shadow-xl shadow-stone-900/10"
               >
                 <div className="text-left">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-400">Terminbuchung</p>
-                  <p className="text-xs font-montserrat font-bold text-white tracking-wide mt-1">JETZT ONLINE ANFRAGEN</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-400">{content.bookingSmall}</p>
+                  <p className="text-xs font-montserrat font-bold text-white tracking-wide mt-1">{content.bookingLarge}</p>
                 </div>
                 <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center transition-all group-hover:bg-blue-600">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="text-white">
@@ -102,20 +107,20 @@ export const PremiumFooter = (): JSX.Element => {
           <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
             <div className="space-y-4">
               <p className="font-lato text-sm italic text-stone-500 tracking-wide leading-relaxed max-w-xs">
-                „Zahnmedizin auf höchstem Niveau für Ihr <span className="text-blue-600 font-bold not-italic">natürliches Lächeln</span>.“
+                “{content.quote}”
               </p>
               <p className="font-lato text-[9px] font-bold uppercase tracking-[0.2em] text-stone-400">
-                © {new Date().getFullYear()} Zahnarztpraxis Dr. Maria Schmidt
+                © {new Date().getFullYear()} {content.copyright}
               </p>
               <p className="font-lato text-[9px] font-medium uppercase tracking-[0.1em] text-stone-400 opacity-60">
-                Letzte Aktualisierung: 09. April 2026
+                {content.lastUpdated}
               </p>
             </div>
             
-            <nav aria-label="Rechtliches" className="flex flex-wrap gap-x-10 gap-y-4">
+            <nav aria-label={content.legalLabel} className="flex flex-wrap gap-x-10 gap-y-4">
               {[
-                { to: "/impressum", label: "Impressum" },
-                { to: "/datenschutz", label: "Datenschutz" }
+                { to: "/impressum", label: content.imprint },
+                { to: "/datenschutz", label: content.privacy }
               ].map(({ to, label }) => (
                 <Link
                   key={label}

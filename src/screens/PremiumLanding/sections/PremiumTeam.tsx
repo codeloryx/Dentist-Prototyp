@@ -1,25 +1,12 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Award } from "lucide-react";
-
-const assistantTeam = [
-  {
-    name: "Anna",
-    role: "Praxismanagement & Patient Care",
-    focus: "Patientenbetreuung & Organisation"
-  },
-  {
-    name: "Lena",
-    role: "Dentalhygiene & Prophylaxe",
-    focus: "Prävention & Bleaching"
-  },
-  {
-    name: "Sophie",
-    role: "Behandlungsassistenz",
-    focus: "Chirurgie-Support & Hygiene"
-  }
-];
+import { useLanguage } from "../../../contexts/LanguageContext";
+import { premiumLandingContent } from "../premiumLandingContent";
 
 export const PremiumTeam = (): JSX.Element => {
+  const { language } = useLanguage();
+  const content = premiumLandingContent[language].team;
+
   // 3D Tilt Effect Logic
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -71,7 +58,7 @@ export const PremiumTeam = (): JSX.Element => {
             <div className="relative z-10 overflow-hidden rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.2)]">
               <img
                 src="/premium_team_maria.png"
-                alt="Das Team in der Smile Lounge"
+                alt={content.imageAlt}
                 className="w-full transition-transform duration-700 group-hover:scale-105"
               />
               
@@ -84,8 +71,8 @@ export const PremiumTeam = (): JSX.Element => {
                   <Award size={20} strokeWidth={2.5} />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-white/80">Expertenteam</span>
-                  <span className="text-sm font-bold text-white">Präzision in NRW</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-white/80">{content.badgeSmall}</span>
+                  <span className="text-sm font-bold text-white">{content.badgeLarge}</span>
                 </div>
               </motion.div>
             </div>
@@ -100,21 +87,20 @@ export const PremiumTeam = (): JSX.Element => {
               transition={{ duration: 0.8 }}
             >
               <p className="font-montserrat text-xs font-bold uppercase tracking-[0.3em] text-blue-600">
-                Führung & Teamgeist
+                {content.eyebrow}
               </p>
               <h2 className="mt-6 font-montserrat text-4xl font-black leading-tight tracking-tighter text-stone-900 md:text-6xl">
-                Ihre Experten für Präzision
+                {content.title}
               </h2>
               <p className="mt-8 font-lato text-xl leading-relaxed text-stone-600">
-                Gemeinsam mit Dr. Maria leben wir eine klare Vision: Strukturierte Diagnostik mit einem hohen Anspruch an Präzision und Verlässlichkeit. 
-                Jede Behandlung wird bei uns im Team koordiniert, um für Sie das bestmögliche Ergebnis zu sichern.
+                {content.text}
               </p>
 
               {/* Signature Area */}
               <div className="mt-10 flex flex-col">
-                <span className="font-montserrat text-xs font-bold uppercase tracking-widest text-stone-400">Leitende Zahnärztin</span>
+                <span className="font-montserrat text-xs font-bold uppercase tracking-widest text-stone-400">{content.leadRole}</span>
                 <div className="mt-2 flex items-baseline gap-4">
-                  <span className="font-montserrat text-2xl font-bold text-stone-900">Dr. Maria Schmidt</span>
+                  <span className="font-montserrat text-2xl font-bold text-stone-900">{content.leadName}</span>
                   <span style={{ fontFamily: '"Mrs Saint Delafield", cursive' }} className="text-4xl text-blue-600/60 select-none">
                     Maria Schmidt
                   </span>
@@ -124,7 +110,7 @@ export const PremiumTeam = (): JSX.Element => {
 
             {/* Assistants Grid */}
             <div className="mt-16 grid gap-8 sm:grid-cols-3">
-              {assistantTeam.map((member, index) => (
+              {content.assistants.map((member, index) => (
                 <motion.div
                   key={member.name}
                   initial={{ opacity: 0, y: 15 }}

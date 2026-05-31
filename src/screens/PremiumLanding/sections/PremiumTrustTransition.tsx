@@ -1,25 +1,15 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-
-const stats = [
-  { value: "15+", label: "Jahre Erfahrung" },
-  { value: "5.000+", label: "durchgeführte Implantatversorgungen" },
-  { value: "Digital unterstützt", label: "Planung und Umsetzung" },
-  { value: "Hohe Patientenzufriedenheit", label: "kontinuierlich dokumentiert" },
-];
-
-const tickerItems = [
-  "DGI IMPLANTOLOGIE",
-  "MASTER OF SCIENCE",
-  "DIGITALE 3D DIAGNOSTIK",
-  "ZERTIFIZIERTE QUALITÄT",
-];
+import { useLanguage } from "../../../contexts/LanguageContext";
+import { premiumLandingContent } from "../premiumLandingContent";
 
 export const PremiumTrustTransition = (): JSX.Element => {
   const [isHovered, setIsHovered] = useState(false);
+  const { language } = useLanguage();
+  const content = premiumLandingContent[language].trustTransition;
   
   // Create 4 sets of items to ensure there is always enough content for a seamless loop
-  const duplicatedItems = [...tickerItems, ...tickerItems, ...tickerItems, ...tickerItems];
+  const duplicatedItems = [...content.tickerItems, ...content.tickerItems, ...content.tickerItems, ...content.tickerItems];
 
   return (
     <div className="relative bg-gradient-to-b from-[#eef4fb] via-[#e7f0f8] to-[#e0eaf5] overflow-hidden">
@@ -70,23 +60,18 @@ export const PremiumTrustTransition = (): JSX.Element => {
            transition={{ duration: 0.8 }}
         >
           <p className="font-montserrat text-xs font-bold uppercase tracking-[0.4em] text-blue-600">
-            Expertise & Vertrauen
+            {content.eyebrow}
           </p>
           <h2 className="mt-6 font-montserrat text-4xl font-light tracking-tight text-stone-900 md:text-5xl">
-            Erfahrung, die <span className="font-semibold text-stone-950 underline decoration-blue-500/30 decoration-8 underline-offset-[-2px]">Sicherheit schafft</span>
+            {content.titleStart} <span className="font-semibold text-stone-950 underline decoration-blue-500/30 decoration-8 underline-offset-[-2px]">{content.titleHighlight}</span>
           </h2>
           <p className="mx-auto mt-10 max-w-2xl font-lato text-xl italic leading-relaxed text-stone-500">
-            „Langjährige klinische Erfahrung, strukturierte Abläufe und der konsequente Einsatz digitaler Verfahren bilden die Grundlage unserer Arbeit.“
+            “{content.quote}”
           </p>
         </motion.div>
 
         <div className="mt-20 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            { value: "15+", label: "Jahre Erfahrung", highlight: false },
-            { value: "5.000+", label: "Implantatversorgungen", highlight: false },
-            { value: "Digital unterstützt", label: "Planung & Umsetzung", highlight: true },
-            { value: "Patientenzufriedenheit", label: "Kontinuierlich dokumentiert", highlight: true },
-          ].map((stat, index) => (
+          {content.stats.map((stat, index) => (
             <motion.div 
               key={stat.label}
               initial={{ opacity: 0, y: 20 }}

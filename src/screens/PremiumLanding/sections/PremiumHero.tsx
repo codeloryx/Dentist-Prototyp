@@ -1,6 +1,11 @@
 import { motion } from "framer-motion";
+import { useLanguage } from "../../../contexts/LanguageContext";
+import { premiumLandingContent } from "../premiumLandingContent";
 
 export const PremiumHero = (): JSX.Element => {
+  const { language } = useLanguage();
+  const content = premiumLandingContent[language].hero;
+
   return (
     <section
       id="top"
@@ -21,7 +26,7 @@ export const PremiumHero = (): JSX.Element => {
           >
             <span className="h-px w-8 bg-blue-600" />
             <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.3em] text-blue-900/60">
-              Praxis Dr. Schmidt · Düsseldorf
+              {content.eyebrow}
             </p>
           </motion.div>
 
@@ -31,8 +36,8 @@ export const PremiumHero = (): JSX.Element => {
             transition={{ delay: 0.4, duration: 0.8 }}
             className="mt-8 font-montserrat text-5xl font-black leading-[1.1] tracking-tighter text-stone-950 md:text-7xl lg:text-8xl"
           >
-            Präzision, die man <span className="text-blue-600">sieht.</span> <br />
-            Qualität, die man <span className="text-blue-600">fühlt.</span>
+            {content.headlineStart} <span className="text-blue-600">{content.headlineEmphasisOne}</span> <br />
+            {content.headlineMiddle} <span className="text-blue-600">{content.headlineEmphasisTwo}</span>
           </motion.h1>
 
           <motion.div 
@@ -41,11 +46,12 @@ export const PremiumHero = (): JSX.Element => {
             transition={{ delay: 0.8, duration: 0.8 }}
             className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 font-lato text-sm font-bold uppercase tracking-widest text-stone-500"
           >
-            <span>Evidenzbasiert</span>
-            <span className="h-4 w-px bg-stone-300" />
-            <span>Transparent</span>
-            <span className="h-4 w-px bg-stone-300" />
-            <span className="text-stone-900">Ruhige Atmosphäre</span>
+            {content.pillars.map((pillar, index) => (
+              <span key={pillar} className={index === content.pillars.length - 1 ? "text-stone-900" : undefined}>
+                {pillar}
+                {index < content.pillars.length - 1 ? <span className="mx-6 inline-block h-4 w-px bg-stone-300 align-middle" /> : null}
+              </span>
+            ))}
           </motion.div>
 
           <motion.p 
@@ -54,7 +60,7 @@ export const PremiumHero = (): JSX.Element => {
             transition={{ delay: 1, duration: 0.8 }}
             className="mt-6 font-lato text-lg leading-relaxed text-stone-600 max-w-lg"
           >
-            Wir schaffen für Sie sichere, planbare Ergebnisse durch unsere Expertise, modernste Technik und menschliche Empathie.
+            {content.text}
           </motion.p>
 
           <motion.div 
@@ -70,19 +76,19 @@ export const PremiumHero = (): JSX.Element => {
                 href="#orientierung"
                 className="font-montserrat inline-flex rounded-full bg-stone-950 px-8 py-4 text-xs font-bold uppercase tracking-widest text-white shadow-xl transition-all hover:bg-stone-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-800"
               >
-                Lernen Sie uns kennen
+                {content.primaryCta}
               </motion.a>
               <motion.a
                 whileHover={{ x: 5 }}
                 href="#standards"
                 className="font-lato inline-flex items-center gap-2 rounded-full px-6 py-4 text-sm font-semibold text-stone-900 underline-offset-8 hover:underline"
               >
-                Qualitätsversprechen
+                {content.secondaryCta}
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14m-6-6l6 6-6 6"/></svg>
               </motion.a>
             </div>
             <p className="font-lato text-xs italic text-stone-400 pl-2">
-              Wir freuen uns auf Sie.
+              {content.note}
             </p>
           </motion.div>
         </motion.div>
@@ -99,7 +105,7 @@ export const PremiumHero = (): JSX.Element => {
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             src="/premium_dental_macro_hero_1775659249558.png"
-            alt="Moderne Zahnmedizin Detail"
+            alt={content.imageAlt}
             className="relative z-10 h-full w-full rounded-2xl object-cover shadow-[0_50px_100px_-20px_rgba(0,0,0,0.12),0_30px_60px_-30px_rgba(0,0,0,0.15)] transition-transform"
           />
 
@@ -112,7 +118,7 @@ export const PremiumHero = (): JSX.Element => {
           >
             <div className="flex h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
             <span className="font-montserrat text-[10px] font-bold uppercase tracking-widest text-blue-900">
-              Präzision & Ästhetik
+              {content.badge}
             </span>
           </motion.div>
         </motion.div>

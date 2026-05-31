@@ -11,6 +11,7 @@ import { PremiumNavigation } from "./sections/PremiumNavigation";
 import { PremiumFAQ } from "./sections/PremiumFAQ";
 import { MetaTags } from "../../components/seo/MetaTags";
 import { StructuredData } from "../../components/seo/StructuredData";
+import { LanguageProvider } from "../../contexts/LanguageContext";
 
 export const PremiumLanding = (): JSX.Element => {
   useEffect(() => {
@@ -29,20 +30,22 @@ export const PremiumLanding = (): JSX.Element => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] text-stone-900 antialiased">
-      <MetaTags />
-      <StructuredData />
-      <PremiumNavigation />
-      <main className="pt-[4.5rem]">
-        <PremiumHero />
-        <PremiumOrientierung />
-        <PremiumServices />
-        <PremiumTeam />
-        <PremiumTrustTransition />
-        <PremiumTrustSection />
-        <PremiumFAQ />
-        <PremiumFooter />
-      </main>
-    </div>
+    <LanguageProvider>
+      <div className="min-h-screen bg-[#faf8f5] text-stone-900 antialiased">
+        <MetaTags />
+        <StructuredData />
+        <PremiumNavigation />
+        <main className="pt-[4.5rem]">
+          <PremiumHero />
+          <PremiumOrientierung />
+          <PremiumServices />
+          <PremiumTeam />
+          <PremiumTrustTransition />
+          <PremiumTrustSection />
+          <PremiumFAQ />
+          <PremiumFooter />
+        </main>
+      </div>
+    </LanguageProvider>
   );
 };

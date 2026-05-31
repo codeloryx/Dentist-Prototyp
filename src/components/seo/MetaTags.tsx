@@ -9,8 +9,8 @@ interface MetaTagsProps {
 }
 
 export const MetaTags = ({
-  title = "Zahnarztpraxis Dr. Maria Schmidt · Evidenzbasierte Zahnmedizin Düsseldorf",
-  description = "Diagnostik, Planung und Behandlung auf dokumentiert hohem Niveau in Düsseldorf. Ruhige Abläufe, klare Kommunikation, messbare Qualitätsstandards.",
+  title = "Dental Practice Dr. Maria Schmidt · Evidence-Based Dentistry Dusseldorf",
+  description = "Diagnostics, planning and treatment at a documented high standard in Dusseldorf. Calm processes, clear communication and measurable quality standards.",
   canonical = window.location.href,
   ogImage = "/og-image.png",
   ogType = "website"
@@ -21,7 +21,7 @@ export const MetaTags = ({
 
   const fullTitle = title.includes("Dr. Maria Schmidt") 
     ? title 
-    : `${title} | Zahnarztpraxis Dr. Maria Schmidt`;
+    : `${title} | Dental Practice Dr. Maria Schmidt`;
 
   return (
     <Helmet>

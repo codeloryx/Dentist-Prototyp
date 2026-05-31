@@ -7,47 +7,40 @@ import {
   Shield,
   Sparkles,
 } from "lucide-react";
+import { useLanguage } from "../../../contexts/LanguageContext";
+import { premiumLandingContent } from "../premiumLandingContent";
 
 const items = [
   {
-    title: "Prävention & Parodontologie",
-    text: "Früherkennung, professionelle Zahnreinigung und strukturierte Verlaufskontrollen – für langfristige Zahngesundheit.",
     Icon: Shield,
     number: "01"
   },
   {
-    title: "Zahnerhalt",
-    text: "Minimalinvasive Karies- und Endodontietherapie – präzise durchgeführt, unterstützt durch Vergrößerungstechniken, wo sinnvoll.",
     Icon: Microscope,
     number: "02"
   },
   {
-    title: "Implantologie",
-    text: "Sorgfältige Planung auf Basis der Knochensituation – mit langlebigen, biologisch und funktional abgestimmten Versorgungen.",
     Icon: Bone,
     number: "03"
   },
   {
-    title: "Ästhetik & Funktion",
-    text: "Natürlich wirkende Ergebnisse durch das Zusammenspiel von Form, Funktion und Ästhetik – in einem konsistenten Gesamtkonzept.",
     Icon: Sparkles,
     number: "04"
   },
   {
-    title: "Kieferorthopädie",
-    text: "Aligner und feste Apparaturen – indikationsgerecht eingesetzt, mit klar definierten Behandlungszielen.",
     Icon: Activity,
     number: "05"
   },
   {
-    title: "Oralchirurgie",
-    text: "Schonende Eingriffe mit strukturierter Nachsorge – für eine sichere und möglichst komplikationsarme Heilung.",
     Icon: HeartPulse,
     number: "06"
   },
 ] as const;
 
 export const PremiumServices = (): JSX.Element => {
+  const { language } = useLanguage();
+  const content = premiumLandingContent[language].services;
+
   return (
     <section id="leistungen" className="scroll-mt-28 border-b border-stone-200/60 bg-[#f4f7fb] overflow-hidden">
       <div className="mx-auto max-w-6xl px-6 py-32">
@@ -61,24 +54,26 @@ export const PremiumServices = (): JSX.Element => {
               transition={{ duration: 0.8 }}
             >
               <p className="font-montserrat text-xs font-bold uppercase tracking-[0.3em] text-blue-600">
-                Spektrum
+                {content.eyebrow}
               </p>
               <h2 className="mt-6 font-montserrat text-4xl font-black leading-tight tracking-tighter text-stone-900 md:text-5xl">
-                Leistungen mit klarer Verantwortung
+                {content.title}
               </h2>
               <div className="mt-8 h-px w-12 bg-blue-200" />
               <p className="mt-8 font-lato text-lg leading-relaxed text-stone-600">
-                Wir empfehlen jede Behandlung ausschließlich auf Basis einer fundierten Diagnose. 
-                Keine standardisierten Pakete – sondern individuelle Planung mit nachvollziehbaren Entscheidungen.
+                {content.text}
               </p>
             </motion.div>
           </div>
 
           {/* Items Grid */}
           <div className="grid gap-6 sm:grid-cols-2">
-            {items.map(({ title, text, Icon, number }, index) => (
+            {items.map(({ Icon, number }, index) => {
+              const service = content.items[index];
+
+              return (
               <motion.article
-                key={title}
+                key={service.title}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -101,10 +96,10 @@ export const PremiumServices = (): JSX.Element => {
                 </div>
                 
                 <h3 className="mt-10 font-montserrat text-xl font-bold tracking-tight text-stone-900">
-                  {title}
+                  {service.title}
                 </h3>
                 <p className="mt-4 font-lato text-sm leading-relaxed text-stone-600">
-                  {text}
+                  {service.text}
                 </p>
 
                 {/* Expanding Precision Line */}
@@ -120,7 +115,8 @@ export const PremiumServices = (): JSX.Element => {
                   />
                 </div>
               </motion.article>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

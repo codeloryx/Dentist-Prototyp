@@ -5,14 +5,8 @@ import { supabase } from "../../../lib/supabase";
 import { useToast } from "../../../hooks/use-toast";
 import { motion } from "framer-motion";
 import { Phone, LogOut } from "lucide-react";
-
-const navItems = [
-  { href: "#leistungen", label: "Leistungen" },
-  { href: "#team", label: "Team" },
-  { href: "#faq", label: "FAQ" },
-  { href: "#standards", label: "Qualität" },
-  { href: "#kontakt", label: "Kontakt" },
-] as const;
+import { useLanguage } from "../../../contexts/LanguageContext";
+import { premiumLandingContent } from "../premiumLandingContent";
 
 export const PremiumNavigation = (): JSX.Element => {
   const [open, setOpen] = useState(false);
@@ -20,6 +14,9 @@ export const PremiumNavigation = (): JSX.Element => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
+  const { language, setLanguage } = useLanguage();
+  const content = premiumLandingContent[language].navigation;
+  const navItems = content.items;
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, target: string) => {
     // If we're not on the landing page, we need to go there first
@@ -48,7 +45,7 @@ export const PremiumNavigation = (): JSX.Element => {
     <header className="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur-md shadow-[0_1px_0_0_rgba(219,234,254,0.5)] transform-gpu">
       <nav
         className="mx-auto flex max-w-6xl items-center justify-between gap-2 sm:gap-6 px-3 sm:px-10 py-3 sm:py-5"
-        aria-label="Hauptnavigation"
+        aria-label={content.aria}
       >
         <Link
           to="/"
@@ -71,7 +68,7 @@ export const PremiumNavigation = (): JSX.Element => {
           </div>
           <div className="flex flex-col items-start justify-center">
             <span className="hidden sm:inline text-base sm:text-xl font-bold leading-none tracking-tight text-blue-950 whitespace-nowrap">Dr. Schmidt</span>
-            <span className="text-[8px] sm:text-xs font-semibold italic text-blue-600/80 leading-none sm:mt-1 ml-0.5 sm:ml-[1.5px] whitespace-nowrap">Ihr Lächeln in besten Händen</span>
+            <span className="text-[8px] sm:text-xs font-semibold italic text-blue-600/80 leading-none sm:mt-1 ml-0.5 sm:ml-[1.5px] whitespace-nowrap">{content.tagline}</span>
           </div>
         </Link>
 
@@ -92,10 +89,28 @@ export const PremiumNavigation = (): JSX.Element => {
         </ul>
 
         <div className="flex items-center gap-2 sm:gap-4 ml-auto min-w-max">
+          <div className="hidden sm:flex items-center rounded-full border border-blue-100 bg-white/70 p-1 shadow-sm">
+            {(["en", "de"] as const).map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => setLanguage(option)}
+                className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest transition-all ${
+                  language === option
+                    ? "bg-blue-600 text-white shadow-sm"
+                    : "text-stone-500 hover:text-blue-700"
+                }`}
+                aria-pressed={language === option}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+
           <a
             href="tel:02111593482"
             className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-blue-50 text-blue-600 transition-all hover:bg-blue-600 hover:text-white"
-            title="0211 1593 482"
+            title={content.phoneTitle}
           >
             <Phone size={14} className="sm:w-[16px]" strokeWidth={2.5} />
           </a>
@@ -105,10 +120,10 @@ export const PremiumNavigation = (): JSX.Element => {
           {!user ? (
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Link
-                to="/login"
-                className="font-lato hidden sm:inline-flex text-sm font-semibold text-stone-600 items-center rounded-full border border-blue-100 bg-white/50 px-4 py-1.5 transition-all hover:bg-blue-50/50 backdrop-blur-sm whitespace-nowrap"
-              >
-                Anmelden
+                  to="/login"
+                  className="font-lato hidden sm:inline-flex text-sm font-semibold text-stone-600 items-center rounded-full border border-blue-100 bg-white/50 px-4 py-1.5 transition-all hover:bg-blue-50/50 backdrop-blur-sm whitespace-nowrap"
+                >
+                {content.login}
               </Link>
             </motion.div>
           ) : (
@@ -119,13 +134,13 @@ export const PremiumNavigation = (): JSX.Element => {
                   className="font-lato inline-flex items-center gap-2 rounded-full border border-blue-100 bg-white/50 px-4 py-1.5 text-sm font-semibold text-stone-700 transition-all hover:bg-white hover:shadow-sm backdrop-blur-sm whitespace-nowrap"
                 >
                   <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  Bereich
+                  {content.area}
                 </Link>
               </motion.div>
               <button
                 onClick={handleLogout}
                 className="flex h-9 w-9 items-center justify-center rounded-full text-stone-400 hover:bg-red-50 hover:text-red-600 transition-all"
-                title="Logout"
+                title={content.logout}
               >
                 <LogOut size={16} strokeWidth={2.5} />
               </button>
@@ -141,8 +156,8 @@ export const PremiumNavigation = (): JSX.Element => {
               to="/dashboard"
               className="group relative flex items-center gap-2 bg-blue-600 px-3 py-2 sm:px-6 sm:py-3 text-[9px] sm:text-[11px] font-bold uppercase tracking-wider sm:tracking-[0.15em] text-white transition-all hover:bg-blue-700 whitespace-nowrap"
             >
-              <span className="relative z-10">Termin</span>
-              <span className="hidden xs:inline relative z-10">buchen</span>
+              <span className="relative z-10">{content.appointmentShort}</span>
+              <span className="hidden xs:inline relative z-10">{content.appointmentLong}</span>
               
               {/* Shine Effect */}
               <div className="absolute inset-0 z-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-[150%] skew-x-[-30deg] group-hover:translate-x-[150%] transition-transform duration-1000 ease-in-out" />
@@ -156,7 +171,7 @@ export const PremiumNavigation = (): JSX.Element => {
             aria-controls="mobile-menu"
             onClick={() => setOpen((v) => !v)}
           >
-            <span className="sr-only">Menü</span>
+            <span className="sr-only">{content.menu}</span>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
               <path
                 d="M4 7h16M4 12h16M4 17h16"
@@ -176,6 +191,23 @@ export const PremiumNavigation = (): JSX.Element => {
           className="border-t border-blue-100 bg-white/95 backdrop-blur-md px-6 py-4 md:hidden"
         >
           <ul className="flex flex-col gap-3">
+            <li className="flex items-center gap-2 pb-2">
+              {(["en", "de"] as const).map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => setLanguage(option)}
+                  className={`rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest transition-all ${
+                    language === option
+                      ? "bg-blue-600 text-white shadow-sm"
+                      : "bg-blue-50 text-stone-500"
+                  }`}
+                  aria-pressed={language === option}
+                >
+                  {option}
+                </button>
+              ))}
+            </li>
             {navItems.map((item) => (
               <li key={item.href}>
                 <a
@@ -193,7 +225,7 @@ export const PremiumNavigation = (): JSX.Element => {
                 className="font-lato block py-1 text-primary font-bold"
                 onClick={() => setOpen(false)}
               >
-                {user ? "Mein Bereich" : "Anmelden"}
+                {user ? content.area : content.login}
               </Link>
             </li>
             {user && (
@@ -204,7 +236,7 @@ export const PremiumNavigation = (): JSX.Element => {
                     className="font-lato block py-1 text-stone-800 font-bold"
                     onClick={() => setOpen(false)}
                   >
-                    Profil
+                    {content.profile}
                   </Link>
                 </li>
                 <li>
@@ -215,7 +247,7 @@ export const PremiumNavigation = (): JSX.Element => {
                     }}
                     className="font-lato block py-1 text-destructive font-bold"
                   >
-                    Abmelden
+                    {content.logout}
                   </button>
                 </li>
               </>
