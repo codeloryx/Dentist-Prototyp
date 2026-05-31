@@ -22,12 +22,15 @@ export const PremiumHero = (): JSX.Element => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="flex items-center gap-3"
+            className="flex flex-wrap items-center gap-3"
           >
             <span className="h-px w-8 bg-blue-600" />
             <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.3em] text-blue-900/60">
               {content.eyebrow}
             </p>
+            <span className="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 font-montserrat text-[9px] font-bold uppercase tracking-[0.18em] text-blue-700">
+              {content.prototypeLabel}
+            </span>
           </motion.div>
 
           <motion.h1 

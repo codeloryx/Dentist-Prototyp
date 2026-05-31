@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 import { ArrowLeft } from "lucide-react";
+import { useLanguage } from "../../contexts/LanguageContext";
+import { premiumLandingContent } from "../../screens/PremiumLanding/premiumLandingContent";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -9,6 +11,8 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { language } = useLanguage();
+  const content = premiumLandingContent[language].auth;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +25,7 @@ export default function LoginPage() {
     });
 
     if (error) {
-      setLoginError("Anmeldedaten sind nicht korrekt");
+      setLoginError(content.error);
       setLoading(false);
       return;
     }
@@ -51,17 +55,17 @@ export default function LoginPage() {
         <Link 
           to="/" 
           className="absolute top-8 left-8 p-2 text-stone-400 hover:text-stone-900 transition-colors rounded-full hover:bg-stone-100"
-          title="Zurück zur Startseite"
+          title={content.backTitle}
         >
           <ArrowLeft size={20} />
         </Link>
         
         <div className="text-center pt-4">
           <h2 className="text-3xl font-bold font-montserrat tracking-tight text-foreground">
-            Anmelden
+            {content.loginTitle}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground font-lato">
-            Willkommen zurück in Ihrer Zahnarztpraxis
+            {content.loginSubtitle}
           </p>
         </div>
 
@@ -69,7 +73,7 @@ export default function LoginPage() {
           <div className="space-y-4 rounded-md shadow-sm">
             <div>
               <label htmlFor="email-address" className="block text-sm font-medium text-foreground font-lato mb-1">
-                E-Mail-Adresse
+                {content.email}
               </label>
               <input
                 id="email-address"
@@ -78,14 +82,14 @@ export default function LoginPage() {
                 autoComplete="email"
                 required
                 className="block w-full px-3 py-2 border border-input rounded-md shadow-sm placeholder-muted-foreground focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-background transition-all"
-                placeholder="ihre@email.de"
+                placeholder={content.emailPlaceholder}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-foreground font-lato mb-1">
-                Passwort
+                {content.password}
               </label>
               <input
                 id="password"
@@ -113,16 +117,16 @@ export default function LoginPage() {
               disabled={loading}
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-lg text-primary-foreground bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
             >
-              {loading ? "Wird geladen..." : "Jetzt anmelden"}
+              {loading ? content.loading : content.submit}
             </button>
           </div>
         </form>
 
         <div className="text-center mt-4">
           <p className="text-sm text-muted-foreground font-lato">
-            Noch kein Konto?{" "}
+            {content.noAccount}{" "}
             <Link to="/register" className="font-bold text-primary hover:underline transition-all">
-              Jetzt registrieren
+              {content.register}
             </Link>
           </p>
         </div>

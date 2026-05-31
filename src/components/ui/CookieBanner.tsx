@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Cookie, Settings, ShieldCheck, Lock } from "lucide-react";
 import { Button } from "./button";
 import { Link, useLocation } from "react-router-dom";
+import { useLanguage } from "../../contexts/LanguageContext";
+import { premiumLandingContent } from "../../screens/PremiumLanding/premiumLandingContent";
 
 const CONSENT_KEY = "cookie_consent_v1";
 
@@ -11,6 +13,8 @@ export function CookieBanner() {
   const [showSettings, setShowSettings] = useState(false);
   const [analysisConsent, setAnalysisConsent] = useState(false);
   const location = useLocation();
+  const { language } = useLanguage();
+  const content = premiumLandingContent[language].cookie;
 
   // Check consent status on mount and on every location change
   useEffect(() => {
@@ -54,11 +58,11 @@ export function CookieBanner() {
                 </div>
                 <div>
                   <h3 className="text-lg font-montserrat font-black text-stone-900 uppercase tracking-tight leading-none">
-                    {showSettings ? "Einstellungen" : "Cookie-Zustimmung"}
+                    {showSettings ? content.settingsTitle : content.title}
                   </h3>
                   <div className="flex items-center gap-1.5 mt-1">
                      <ShieldCheck size={12} className="text-emerald-500" />
-                     <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest">DSGVO-Konformität aktiv</span>
+                     <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest">{content.compliance}</span>
                   </div>
                 </div>
               </div>
@@ -67,16 +71,16 @@ export function CookieBanner() {
                 <>
                   <div className="space-y-4">
                     <p className="text-sm text-stone-600 font-bold leading-tight">
-                      Wir nutzen Cookies, um Ihnen den bestmöglichen Service bei der Terminbuchung zu bieten:
+                      {content.intro}
                     </p>
                     <ul className="space-y-2">
                       <li className="flex items-center gap-2.5 text-[11px] text-stone-500 font-medium bg-emerald-500/5 p-2 rounded-xl border border-emerald-500/10">
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0 shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse" />
-                        <span>Notwendig (Patienten-Login & Buchung)</span>
+                        <span>{content.necessary}</span>
                       </li>
                       <li className="flex items-center gap-2.5 text-[11px] text-stone-500 font-medium p-2 bg-stone-50/50 rounded-xl border border-stone-200/20">
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/40 shrink-0" />
-                        <span>Präferenzen & Reichweite</span>
+                        <span>{content.preferences}</span>
                       </li>
                     </ul>
                   </div>
@@ -86,7 +90,7 @@ export function CookieBanner() {
                       onClick={() => handleConsent("all")}
                       className="w-full h-14 bg-stone-900 hover:bg-stone-800 text-white rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl transition-all active:scale-[0.98]"
                     >
-                       Alle Akzeptieren ✨
+                       {content.acceptAll}
                     </Button>
                     
                     <div className="flex gap-3">
@@ -95,7 +99,7 @@ export function CookieBanner() {
                         variant="outline"
                         className="flex-1 h-12 border-stone-200 rounded-2xl font-bold text-stone-600 hover:bg-stone-50 text-[11px] uppercase tracking-wider"
                       >
-                         Nur Notwendige
+                         {content.necessaryOnly}
                       </Button>
                       <Button 
                         onClick={() => setShowSettings(true)}
@@ -110,14 +114,14 @@ export function CookieBanner() {
               ) : (
                 <div className="space-y-6">
                   <p className="text-xs text-stone-500 font-medium leading-relaxed">
-                    Passen Sie hier Ihre Privatsphäre-Einstellungen an:
+                    {content.settingsIntro}
                   </p>
                   
                   <div className="space-y-3">
                     <div className="flex items-center justify-between p-4 bg-stone-50 rounded-2xl border border-stone-200/50">
                        <div className="flex items-center gap-2">
                           <Lock size={12} className="text-stone-400" />
-                          <span className="text-[11px] font-black uppercase text-stone-700">Notwendig</span>
+                          <span className="text-[11px] font-black uppercase text-stone-700">{content.necessaryLabel}</span>
                        </div>
                        <div className="w-10 h-5 bg-emerald-500/20 rounded-full relative opacity-50">
                           <div className="absolute right-1 top-1 w-3 h-3 bg-emerald-500 rounded-full" />
@@ -128,7 +132,7 @@ export function CookieBanner() {
                       onClick={() => setAnalysisConsent(!analysisConsent)}
                       className="w-full flex items-center justify-between p-4 bg-white rounded-2xl border border-stone-200/50 hover:border-emerald-200 transition-all group/toggle"
                     >
-                       <span className="text-[11px] font-black uppercase text-stone-500 group-hover/toggle:text-stone-800">Analyse (Opt-In)</span>
+                       <span className="text-[11px] font-black uppercase text-stone-500 group-hover/toggle:text-stone-800">{content.analysis}</span>
                        <div className={`w-10 h-5 rounded-full relative transition-colors duration-300 ${analysisConsent ? 'bg-emerald-500' : 'bg-stone-200'}`}>
                           <motion.div 
                             animate={{ x: analysisConsent ? 20 : 0 }}
@@ -143,14 +147,14 @@ export function CookieBanner() {
                       onClick={() => handleConsent("custom")}
                       className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-black uppercase tracking-widest text-[10px]"
                     >
-                      Auswahl speichern
+                      {content.save}
                     </Button>
                     <Button 
                       onClick={() => setShowSettings(false)}
                       variant="ghost"
                       className="w-full text-[10px] font-black uppercase tracking-widest text-stone-400 hover:text-stone-900"
                     >
-                      ← Abbrechen
+                      ← {content.cancel}
                     </Button>
                   </div>
                 </div>
@@ -158,10 +162,10 @@ export function CookieBanner() {
 
               <div className="text-center pt-4 border-t border-stone-100 mt-2">
                  <Link 
-                    to="/datenschutz" 
+                    to={language === "en" ? "/privacy" : "/datenschutz"} 
                     className="text-[10px] font-black text-stone-300 hover:text-emerald-600 uppercase tracking-[0.2em] transition-colors"
                  >
-                    Datenschutzbestimmungen einsehen
+                    {content.privacyLink}
                  </Link>
               </div>
             </div>

@@ -1,15 +1,19 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuthContext } from "../../contexts/AuthContext";
+import { useLanguage } from "../../contexts/LanguageContext";
+import { premiumLandingContent } from "../../screens/PremiumLanding/premiumLandingContent";
 
 export function ProtectedRoute() {
   const { user, loading } = useAuthContext();
+  const { language } = useLanguage();
+  const content = premiumLandingContent[language].auth;
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#faf8f5]">
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 border-4 border-stone-200 border-t-stone-900 rounded-full animate-spin" />
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">Authentifizierung...</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">{content.authenticating}</span>
         </div>
       </div>
     );
@@ -24,13 +28,15 @@ export function ProtectedRoute() {
 
 export function AdminRoute() {
   const { user, loading, isAdmin } = useAuthContext();
+  const { language } = useLanguage();
+  const content = premiumLandingContent[language].auth;
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#faf8f5]">
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 border-4 border-stone-200 border-t-stone-900 rounded-full animate-spin" />
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">Prüfe Berechtigung...</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">{content.checkingAccess}</span>
         </div>
       </div>
     );

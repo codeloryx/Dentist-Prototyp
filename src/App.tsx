@@ -60,6 +60,8 @@ export default function App() {
       <Route path="/unauthorized" element={<Unauthorized />} />
       <Route path="/datenschutz" element={<PrivacyPage />} />
       <Route path="/impressum" element={<ImpressumPage />} />
+      <Route path="/privacy" element={<PrivacyPage />} />
+      <Route path="/imprint" element={<ImpressumPage />} />
       
       {/* Patient Protected Routes */}
       <Route element={<ProtectedRoute />}>

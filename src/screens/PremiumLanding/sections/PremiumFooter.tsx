@@ -119,8 +119,8 @@ export const PremiumFooter = (): JSX.Element => {
             
             <nav aria-label={content.legalLabel} className="flex flex-wrap gap-x-10 gap-y-4">
               {[
-                { to: "/impressum", label: content.imprint },
-                { to: "/datenschutz", label: content.privacy }
+                { to: language === "en" ? "/imprint" : "/impressum", label: content.imprint },
+                { to: language === "en" ? "/privacy" : "/datenschutz", label: content.privacy }
               ].map(({ to, label }) => (
                 <Link
                   key={label}

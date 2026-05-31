@@ -4,15 +4,65 @@ import { PremiumFooter } from "../screens/PremiumLanding/sections/PremiumFooter"
 import { Info, MapPin, Phone, Mail, Award, Landmark, FileCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { MetaTags } from "../components/seo/MetaTags";
+import { useLanguage } from "../contexts/LanguageContext";
+
+const imprintContent = {
+  en: {
+    metaTitle: "Imprint",
+    metaDescription: "Legal information and contact details for the dental practice prototype Dr. Maria Schmidt in Dusseldorf.",
+    title: "Imprint",
+    subtitleA: "Legal information",
+    subtitleB: "April 2024",
+    owner: "Practice owner",
+    practice: "Dental practice",
+    qualification: "Qualification",
+    dentist: "Dentist",
+    qualificationNote: "awarded in the Federal Republic of Germany",
+    licenseNote: "License granted by the District Government of Dusseldorf",
+    authoritiesTitle: "Responsible supervisory authorities",
+    chamber: "Responsible chamber",
+    association: "Statutory Dental Association",
+    regulationsTitle: "Professional regulations",
+    regulationsText: "The owner is subject to the following professional regulations, which can be viewed on the website of the Dental Chamber North Rhine (www.zaek-nr.de):",
+    regulations: ["Dentistry Act", "Healthcare Professions Act NRW", "Professional Code of the Dental Chamber North Rhine", "Fee Schedule for Dentists (GOZ)"],
+    disputeTitle: "Dispute resolution",
+    disputeText: "The European Commission provides a platform for online dispute resolution. We are neither willing nor obliged to participate in dispute resolution proceedings before a consumer arbitration board.",
+    back: "Back to homepage",
+  },
+  de: {
+    metaTitle: "Impressum",
+    metaDescription: "Gesetzliche Angaben und Kontaktinformationen der Zahnarztpraxis Dr. Maria Schmidt in Düsseldorf.",
+    title: "Impressum",
+    subtitleA: "Gesetzliche Angaben",
+    subtitleB: "Stand April 2024",
+    owner: "Inhaberin",
+    practice: "Zahnarztpraxis",
+    qualification: "Qualifikation",
+    dentist: "Zahnärztin",
+    qualificationNote: "verliehen in der Bundesrepublik Deutschland",
+    licenseNote: "Approbation erteilt durch die Bezirksregierung Düsseldorf",
+    authoritiesTitle: "Zuständige Aufsichtsbehörden",
+    chamber: "Zuständige Kammer",
+    association: "Kassenzahnärztliche Vereinigung",
+    regulationsTitle: "Berufsrechtliche Regelungen",
+    regulationsText: "Die Inhaberin unterliegt den folgenden berufsrechtlichen Regelungen, welche über die Website der Zahnärztekammer Nordrhein (www.zaek-nr.de) eingesehen werden können:",
+    regulations: ["Zahnheilkundegesetz", "Heilberufegesetz NRW", "Berufsordnung der ZÄK Nordrhein", "Gebührenordnung für Zahnärzte (GOZ)"],
+    disputeTitle: "Streitschlichtung",
+    disputeText: "Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit. Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.",
+    back: "Zurück zur Startseite",
+  },
+} as const;
 
 export default function ImpressumPage() {
   const navigate = useNavigate();
+  const { language } = useLanguage();
+  const copy = imprintContent[language];
 
   return (
     <div className="min-h-screen bg-[#faf8f5] text-stone-900 antialiased">
       <MetaTags 
-        title="Impressum" 
-        description="Gesetzliche Angaben und Kontaktinformationen der Zahnarztpraxis Dr. Maria Schmidt in Düsseldorf."
+        title={copy.metaTitle} 
+        description={copy.metaDescription}
         canonical="https://dentist-prototyp.vercel.app/impressum"
       />
       <PremiumNavigation />
@@ -30,12 +80,12 @@ export default function ImpressumPage() {
             </div>
             <div>
               <h1 className="text-4xl font-montserrat font-black uppercase tracking-tight text-stone-900">
-                Impressum
+                {copy.title}
               </h1>
               <p className="text-stone-400 font-bold uppercase tracking-widest text-[10px] mt-1 space-x-2">
-                <span>Gesetzliche Angaben</span>
+                <span>{copy.subtitleA}</span>
                 <span className="text-stone-200">|</span>
-                <span>Stand April 2024</span>
+                <span>{copy.subtitleB}</span>
               </p>
             </div>
           </div>
@@ -48,10 +98,10 @@ export default function ImpressumPage() {
                </div>
                <h2 className="text-xs font-black uppercase tracking-[0.2em] text-emerald-600 mb-6 flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                  Inhaberin
+                  {copy.owner}
                </h2>
                <div className="space-y-1 text-stone-800 font-bold text-lg leading-tight mb-6">
-                  <p>Zahnarztpraxis</p>
+                  <p>{copy.practice}</p>
                   <p>Dr. Maria Schmidt</p>
                </div>
                <div className="space-y-3 text-stone-500 font-medium text-sm">
@@ -76,16 +126,16 @@ export default function ImpressumPage() {
                <div>
                   <h2 className="text-xs font-black uppercase tracking-[0.2em] text-emerald-500 mb-6 flex items-center gap-2">
                      <Award size={16} />
-                     Qualifikation
+                     {copy.qualification}
                   </h2>
                   <div className="space-y-2">
-                     <p className="text-2xl font-montserrat font-black uppercase leading-none">Zahnärztin</p>
-                     <p className="text-stone-400 text-xs font-medium italic">verliehen in der Bundesrepublik Deutschland</p>
+                     <p className="text-2xl font-montserrat font-black uppercase leading-none">{copy.dentist}</p>
+                     <p className="text-stone-400 text-xs font-medium italic">{copy.qualificationNote}</p>
                   </div>
                </div>
                <div className="mt-8 pt-6 border-t border-white/10">
                   <p className="text-[10px] text-stone-500 font-bold uppercase tracking-widest leading-relaxed">
-                     Approbation erteilt durch die Bezirksregierung Düsseldorf
+                     {copy.licenseNote}
                   </p>
                </div>
             </section>
@@ -95,13 +145,13 @@ export default function ImpressumPage() {
           <div className="space-y-12">
             <section className="space-y-6">
               <div className="flex items-center gap-3 mb-6 text-stone-900 border-l-4 border-emerald-500 pl-4">
-                 <h2 className="text-xl font-montserrat font-black uppercase tracking-wide">Zuständige Aufsichtsbehörden</h2>
+                 <h2 className="text-xl font-montserrat font-black uppercase tracking-wide">{copy.authoritiesTitle}</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div className="p-6 bg-white border border-stone-100 rounded-3xl flex items-start gap-4">
                     <Landmark className="text-stone-400 shrink-0" size={20} />
                     <div>
-                       <h3 className="font-black text-stone-900 text-[11px] uppercase tracking-wider mb-1">Zuständige Kammer</h3>
+                       <h3 className="font-black text-stone-900 text-[11px] uppercase tracking-wider mb-1">{copy.chamber}</h3>
                        <p className="text-stone-500 text-[13px] font-medium leading-relaxed">
                           Zahnärztekammer Nordrhein (Körperschaft des öffentlichen Rechts)<br />
                           Emanuel-Leutze-Str. 8, 40547 Düsseldorf
@@ -111,7 +161,7 @@ export default function ImpressumPage() {
                  <div className="p-6 bg-white border border-stone-100 rounded-3xl flex items-start gap-4">
                     <FileCheck className="text-stone-400 shrink-0" size={20} />
                     <div>
-                       <h3 className="font-black text-stone-900 text-[11px] uppercase tracking-wider mb-1">Kassenzahnärztliche Vereinigung</h3>
+                       <h3 className="font-black text-stone-900 text-[11px] uppercase tracking-wider mb-1">{copy.association}</h3>
                        <p className="text-stone-500 text-[13px] font-medium leading-relaxed">
                           KZV Nordrhein<br />
                           Lindemannstraße 34-42, 40237 Düsseldorf
@@ -122,34 +172,24 @@ export default function ImpressumPage() {
             </section>
 
             <section className="space-y-4">
-              <h2 className="text-lg font-montserrat font-black uppercase tracking-wide text-stone-900">Berufsrechtliche Regelungen</h2>
+              <h2 className="text-lg font-montserrat font-black uppercase tracking-wide text-stone-900">{copy.regulationsTitle}</h2>
               <p className="text-stone-500 text-sm font-medium leading-relaxed">
-                Die Inhaberin unterliegt den folgenden berufsrechtlichen Regelungen, welche über die Website der Zahnärztekammer Nordrhein (www.zaek-nr.de) eingesehen werden können:
+                {copy.regulationsText}
               </p>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-stone-400 font-bold uppercase tracking-widest list-none">
-                 <li className="flex items-center gap-2">
-                    <div className="w-1 h-1 rounded-full bg-stone-300" />
-                    Zahnheilkundegesetz
-                 </li>
-                 <li className="flex items-center gap-2">
-                    <div className="w-1 h-1 rounded-full bg-stone-300" />
-                    Heilberufegesetz NRW
-                 </li>
-                 <li className="flex items-center gap-2">
-                    <div className="w-1 h-1 rounded-full bg-stone-300" />
-                    Berufsordnung der ZÄK Nordrhein
-                 </li>
-                 <li className="flex items-center gap-2">
-                    <div className="w-1 h-1 rounded-full bg-stone-300" />
-                    Gebührenordnung für Zahnärzte (GOZ)
-                 </li>
+                 {copy.regulations.map((regulation) => (
+                   <li key={regulation} className="flex items-center gap-2">
+                      <div className="w-1 h-1 rounded-full bg-stone-300" />
+                      {regulation}
+                   </li>
+                 ))}
               </ul>
             </section>
 
             <section className="p-8 bg-stone-50 rounded-[2rem] border border-stone-100 italic">
-               <h2 className="text-[10px] font-black uppercase tracking-widest text-stone-400 mb-4">Streitschlichtung</h2>
+               <h2 className="text-[10px] font-black uppercase tracking-widest text-stone-400 mb-4">{copy.disputeTitle}</h2>
                <p className="text-stone-500 text-[12px] leading-relaxed">
-                  Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit. Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
+                  {copy.disputeText}
                </p>
             </section>
           </div>
@@ -160,7 +200,7 @@ export default function ImpressumPage() {
                 onClick={() => navigate("/")}
                 className="inline-flex items-center gap-2 text-stone-400 hover:text-stone-900 font-black uppercase tracking-[0.2em] text-[10px] bg-white px-8 py-4 rounded-full border border-stone-100 transition-all shadow-sm hover:shadow-md active:scale-95"
              >
-                ← Zurück zur Startseite
+                ← {copy.back}
              </button>
           </div>
         </motion.div>
