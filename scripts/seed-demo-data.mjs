@@ -74,12 +74,20 @@ const DEMO_PATIENTS = [
 
 // ── Helper: Date/Time Utilities ──────────────────────────────────────────────
 function dateStr(d) {
-  return d.toISOString().slice(0, 10);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 }
 
 function toISO(dateString, hours, minutes) {
   const d = new Date(`${dateString}T${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00`);
   return d.toISOString();
+}
+
+function endTimeISO(dateString, hours, minutes, durationMinutes) {
+  const start = new Date(`${dateString}T${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00`);
+  return new Date(start.getTime() + durationMinutes * 60 * 1000).toISOString();
 }
 
 function addDays(date, days) {
@@ -255,7 +263,7 @@ async function main() {
       const duration = sessionType.default_duration_minutes || 30;
 
       const startTime = toISO(ds, slot.h, slot.m);
-      const endTime = toISO(ds, slot.h, slot.m + duration);
+      const endTime = endTimeISO(ds, slot.h, slot.m, duration);
 
       // Create session
       const { data: session, error: sessErr } = await supabase
